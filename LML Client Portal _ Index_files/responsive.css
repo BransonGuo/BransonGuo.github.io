@@ -1,0 +1,246 @@
+﻿@media screen and (max-width: 1440px) {
+    .main-login-sec {
+        padding-top:20px;
+        padding-bottom:20px;
+    }
+    .login-container {
+        padding:25px 40px;
+    }
+    .register-form .login-action-btns {
+        margin-top:15px;
+    }
+    .register-form h1 {
+        margin-top: 15px;
+        margin-bottom:15px;
+    }
+    .register-form .register-desc {
+        padding-bottom:0;
+    }
+}
+
+
+    @media screen and (max-width: 767px) {
+        #imgMainHeading {
+            content: url("../Images/DynamicLogo_lingo_black3.png");
+            width: 85%;
+            margin-top: 10px;
+            margin-bottom: 0px;
+        }
+
+        .Menu-Card {
+            display: inline-block;
+            width: 100%;
+        }
+    }
+
+    @media screen and (min-width: 768px) {
+        #imgMainHeading {
+            content: url("../Images/DynamicLogo_lingo_black7.png");
+            width: 100%;
+            margin-top: 20px;
+            margin-bottom: 30px;
+        }
+
+        .Menu-Card, .advert-cart {
+            margin-left: -10px;
+            margin-right: -10px;
+        }
+    }
+
+    @media screen and (min-width: 768px) and (max-width:991px) {
+        .Menu-Card {
+            min-height: 194px;
+            padding: 10px
+        }
+
+            .Menu-Card img {
+                width: 25%;
+            }
+    }
+
+    @media screen and (min-width: 991px) and (max-width:1024px) {
+        .Menu-Card {
+            min-height: 286px;
+            padding: 10px
+        }
+
+            .Menu-Card img {
+                width: 30%;
+            }
+    }
+
+    @media screen and (min-width:1366px) and (max-width:1400px) {
+        .Menu-Card {
+            min-height: 394px;
+        }
+    }
+@media screen and (min-width:1280px) and (max-height:800px) {
+    .Menu-Card {
+        min-height:363px;
+    }
+}
+    @media only screen and (max-width:1024px) {
+        .k-ff .k-grid .k-pager-numbers, .k-webkit .k-grid .k-pager-numbers {
+            left: 74px;
+        }
+    }
+
+    @media only screen and (max-width:991px) {
+        .navbar-collapse {
+            flex-direction: column;
+            justify-content: flex-end;
+            align-items: flex-end;
+        }
+
+            .navbar-collapse .navbar-nav:first-of-type {
+                margin-right: 0 !important;
+                order: 2
+            }
+
+        .Menu-Card-Container {
+            display: flex;
+            width: calc(100% + 20px);
+            height: 100%;
+        }
+
+        .Menu-Card {
+            height: 100%;
+            display: flex;
+            width: 100%;
+        }
+        .Menu-Card-Img  {
+            margin-bottom:15px;
+        }
+        .Menu-Card-Img svg {
+           height:120px;
+
+        }
+    }
+
+    @media only screen and (max-width:767px) {
+        .site-header {
+            position: relative;
+            
+            border-bottom: 4px solid #D52319;
+        }
+
+
+
+        .navbar-nav {
+            text-align: center;
+        }
+
+        .site-header .navbar-collapse > .navbar-nav {
+            margin-top: 25px !important;
+        }
+
+        .site-header .navbar-nav li a {
+            padding: 10px 10px;
+            display: block;
+        }
+
+        .site-header .navbar-nav.login-sec li a::after {
+            display: none;
+        }
+
+        .site-footer .container .row, .site-footer .footer-menu {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+            .site-footer .container .row .ml-auto {
+                margin-left: auto !important;
+                margin-right: auto !important;
+            }
+
+        .site-footer .footer-menu {
+            margin-top: 10px;
+            margin-bottom: 15px;
+        }
+
+            .site-footer .footer-menu li {
+                padding-bottom: 10px;
+                border-right: none;
+                line-height: 18px;
+                text-align: center;
+            }
+
+        .login-container {
+            max-width: 450px;
+            min-width:inherit;
+        }
+
+        .Menu-Card-Container {
+            width: 100%;
+        }
+
+        .Menu-Card {
+            padding: 30px;
+        }
+
+        .advert-cart {
+            max-width: 260px;
+            margin: 0 auto
+        }
+        .contact-info {
+            margin-bottom:20px;
+        }
+        .contact-info address, .contact-info p {
+            margin-bottom:0
+        }
+        .info-box-row .col-md-6 {
+            padding-bottom:15px;
+        }
+        .info-box-row .col-md-6:first-of-type {
+            padding-right: 15px;
+        }
+        .info-box-row .col-md-6:last-of-type {
+            padding-left: 15px;
+        }
+
+    }
+
+    @media only screen and (max-width:575px) {
+        .login-container {
+            padding: 25px;
+        }
+    }
+
+
+@-moz-document url-prefix() {
+    input[type="date"].form-control {
+        appearance: none;
+        -moz-appearance: none;
+        -webkit-appearance: none;
+        background-image: url("../Images/calendar.png");
+        background-repeat: no-repeat;
+        background-position: 98% center;
+    }
+}
+
+@media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
+    .tile-wrapper .k-grid-header {
+        padding-right:17px !important;
+    }
+
+
+    input[type="date"].form-control {
+        -webkit-appearance: none;
+        background-image: url("../Images/calendar.png");
+        background-repeat: no-repeat;
+        background-position: 98% center;
+    }
+}
+@supports (-ms-ime-align:auto) {
+    input[type="date"].form-control {
+        -webkit-appearance: none;
+        background-image: url("../Images/calendar.png");
+        background-repeat: no-repeat;
+        background-position: 98% center;
+    }
+
+    .k-grid-header {
+        padding-right: 16px !important;
+    }
+}

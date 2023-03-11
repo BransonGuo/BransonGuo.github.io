@@ -1,0 +1,32 @@
+﻿jQuery.validator.addMethod("validatedob",
+    function (value, element, param) {
+       
+        var currDate = param;
+        var sdoc = currDate.split('-');
+        var dobDate = value.replaceAll('-','/');
+        var sdob = dobDate.split('-');
+        ////pass year,month,date in new Date object.
+        //var vDOB = new Date(sdob[2], sdob[1], sdob[0]);
+        //var vDOC = new Date(sdoc[2], sdoc[1], sdoc[0]);
+        ////getAge user define function to calculate age.
+
+        //var vYrs = getAge(vDOB, vDOC);
+
+        
+        var result = false;
+        //if (vYrs >= 18 && vYrs <= 30) { result = true; }
+        //if (parseInt(dobDate.split('-')[0]) < 2011 && parseInt(dobDate.split('-')[0]) > 1900) { return true; }
+        if (new Date(currDate) >= new Date(dobDate)) { return true;}
+        return result;
+    });
+
+jQuery.validator.unobtrusive.adapters.add
+    ("validatedob", ["param"], function (options) {
+
+        options.rules["validatedob"] = options.params.param;
+        options.messages["validatedob"] = options.message;
+    });
+
+//function getAge(oldDate, currDate) {
+//    return currDate.getFullYear() - oldDate.getFullYear();
+//}

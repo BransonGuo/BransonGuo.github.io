@@ -1,0 +1,203 @@
+﻿var gridObject = null;
+
+function initialiseGrid($grid) {
+    gridObject = $grid;
+    BindGridFilters($grid);
+}
+
+function BindGridFilters($grid) {
+    var $form = $('form[id="SearchForm"]');
+    var $searchButton = $form.find('.Search-btn');
+    var $clearButton = $form.find('.clear-filter');
+
+    if ($form != 'undefined') {
+        $form.keypress(function (e) {
+            if (e.keyCode === 13) {
+                $searchButton.trigger("click");
+            }
+        });
+    }
+
+    $searchButton.click(function () {
+        //if the search filters are empty then the user will want to clear the filters, i.e. the same as clicking clear filter
+        let $searchForm = $(this).closest('#SearchForm');
+        let DataArray = $searchForm.serializeArray();
+        let blnHasData = false;
+        for (let i = 0; i < DataArray.length; i++) {
+            if (DataArray[i].value) {
+                blnHasData = true;
+                break;
+            }
+        }
+        if (!blnHasData) {
+            $searchForm.find('.clear-filter').click();
+        }
+        else {
+            // Find related grid to refresh.
+            var $grid = gridObject;
+            __searchButton = $(this);
+            $grid.dataSource.filter({});
+           
+            __searchButton = null;
+            refreshGridFilterIconsFromSearch($grid);
+            applyFilter($(this));
+        }
+    });
+
+    $clearButton.click(function (e) {
+        let $searchForm = $(this).closest('#SearchForm');
+        if ($searchForm.length > 0) {
+            clearForm($searchForm);
+        }
+        // Find related grid to refresh.
+        var $grid = gridObject;
+        __searchButton = $(this);
+        $grid.dataSource.filter({});
+        __searchButton = null;
+
+        refreshGridFilterIconsFromSearch($grid);
+    });
+}
+
+function getCustomFilters() {
+    if (typeof __searchButton !== 'undefined' && __searchButton !== null) {
+        var filterOptions = { logic: 'and', filters: [] };
+        // Find search form for creating query string.
+        var searchForm = __searchButton.parents('form')[0];
+        var DataArray = $(searchForm).serializeArray();
+        var blnHasData = false;
+        for (var i = 0; i < DataArray.length; i++) {
+            if (DataArray[i].value) {
+                blnHasData = true;
+                break;
+            }
+        }
+        if (blnHasData) {
+            $.each(DataArray,
+                function (i, v) {
+                    if (v.name !== '__RequestVerificationToken' && v.name.indexOf("_input") === -1 && v.value !== '') {
+                        var op = getFilterOperator(v.name);
+                        if (op === 'multiselect') {
+                            var multiFilterOptions = { logic: 'or', filters: [] };
+                            $.each($('select[name ="' + v.name + '"]').val(), function (index, value) {
+                                multiFilterOptions.filters.push({ field: v.name, operator: 'eq', value: value });
+                            });
+                            filterOptions.filters.push(multiFilterOptions);
+                        }
+                        else {
+                            filterOptions.filters.push({ field: v.name, operator: op, value: handleKendoDates(v) });
+                        }
+                    }
+                });
+        }
+        else {
+            filterOptions = null;
+        }
+
+        return filterOptions;
+    }
+    return null;
+}
+
+function applyFilter(btn) {
+    if (btn.data("grid")) {
+        grid = $("#" + btn.data("grid")).data("kendoGrid");
+    }
+    else {
+        grid = btn.closest('form').parent().parent().parent().find("[data-role=grid]").first().data("kendoGrid");
+    }
+
+    __searchButton = btn;
+    var kendoFilters = grid.dataSource.filter();
+    var customFilters = getCustomFilters();
+    var combinedFilters = { logic: 'and', filters: [] };
+    if (kendoFilters === null || kendoFilters === undefined) {
+        if (customFilters !== null) {
+            grid.dataSource.filter(customFilters);
+        }
+    } else {
+        if (customFilters !== null && customFilters.filters.length > 0) {
+            // remove kendo filters that are the same as the custom filters:
+            customFilters.filters.forEach(function (f) { removeFromFilters(kendoFilters, f.field); });
+            removeEmptyFilters(kendoFilters.filters);
+            combinedFilters.logic = 'and';
+            if (kendoFilters.filters.length > 0) {
+                combinedFilters.filters.push(kendoFilters);
+            }
+            combinedFilters.filters.push(customFilters);
+            grid.dataSource.filter(combinedFilters);
+        }
+        else {
+            grid.dataSource.filter(kendoFilters);
+        }
+    }
+
+    __searchButton = null;
+
+    refreshGridFilterIconsFromSearch(grid);
+}
+
+function getFilterOperator(name) {
+    var op = $('[name="' + name + '"]').attr('LMLOrderfilter');
+    if ((typeof op != 'undefined')) {
+        return op;
+    }
+    else {
+        return 'eq';
+    }
+}
+
+function handleKendoDates(filter) {
+    if ($('[name="' + filter.name + '"]').data('role') === 'datetimepicker') {
+        return moment(filter.value, 'DD/MM/YYYY HH:mm').toDate();
+    } else if ($('[name="' + filter.name + '"]').data('role') === 'datepicker') {
+        return moment(filter.value, 'DD/MM/YYYY').toDate();
+    } else {
+        return filter.value;
+    }
+}
+
+function refreshGridFilterIconsFromSearch(grid) {
+    $(grid.element).find("a.k-header-column-menu").find("span").removeClass("k-i-filter");
+    $(grid.element).find("a.k-header-column-menu").find("span").addClass("k-state-active");
+}
+
+function clearForm($form) {
+    $form = $($form);
+    $form.find('input').not('input[role=dropdownlist],input[role=listbox],input.DoNotClear').val("");
+
+    // For clearing kendo dropdownlist.
+    $form.find('[data-role="dropdownlist"]').each(function (index, value) {
+        var id = $(this).attr('id');
+        if (id != "Archived") {
+            var ddl = $form.find("#" + id).data("kendoDropDownList");
+            ddl.select(0);
+            if (Array.isArray(ddl.options.dataSource)) {
+                //we need to refresh to ensure the placeholder is rendered. We only need to do this with things with array datasources, i.e. not from the server
+                ddl.refresh();
+            }
+        }
+
+    });
+    $form.find('[data-role="multiselect"]').each(function (index, value) {
+        var id = $(this).attr('id');
+        var multi = $form.find("#" + id).data("kendoMultiSelect");
+        multi.value("");
+        multi.input.blur();
+    });
+    $form.find('[data-role="listbox"]').each(function (index, value) {
+        var id = $(this).attr('id');
+        var ddl = $form.find("#" + id).data("kendoDropDownList");
+        ddl.select(0);
+        if (Array.isArray(ddl.options.dataSource)) {
+            //we need to refresh to ensure the placeholder is rendered. We only need to do this with things with array datasources, i.e. not from the server
+            ddl.refresh();
+        }
+    });
+    $form.find("textarea").val('');
+    $form.find("input[type=checkbox]").prop('checked', false);
+    $form.find('select').not('[data-role="dropdownlist"],[data-role="multiselect"]').prop('selectedIndex', 0);
+
+    $form.find(".k-datepicker input").val('');
+    $form.find(".k-datetimepicker input").val('');
+}

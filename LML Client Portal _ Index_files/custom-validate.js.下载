@@ -1,0 +1,17 @@
+﻿jQuery.validator.addMethod("validatename",
+    function (value, element, param) {
+        var name = value;
+        var result = false;
+
+        if (name.trim() != "") {
+            return true;
+        }
+
+        return result;
+    });
+
+jQuery.validator.unobtrusive.adapters.add
+    ("validatename", ["param"], function (options) {
+        options.rules["validatename"] = options.params.param;
+        options.messages["validatename"] = options.message;
+    });
